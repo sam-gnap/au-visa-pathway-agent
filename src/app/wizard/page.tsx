@@ -31,10 +31,10 @@ export default function WizardPage() {
 
   return (
     <section>
-      <p style={{ marginBottom: "0.5rem" }}>
+      <p className="page-backlink">
         <Link href="/">&larr; Back to landing</Link>
       </p>
-      <h1 style={{ marginTop: "0.25rem" }}>Visa pathway wizard</h1>
+      <h1 className="page-title">Visa pathway wizard</h1>
 
       <WizardForm onSubmit={handleSubmit} />
 

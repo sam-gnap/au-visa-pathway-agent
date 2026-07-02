@@ -9,7 +9,7 @@ import {
   LAST_CHECKED,
   QUAL_RANK,
   estimatePoints,
-  occupationLooksEligible,
+  occupationOnLists,
 } from "./_shared";
 
 export const rule: VisaSubclassRule = {
@@ -78,7 +78,8 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
     missing.push("Competent English or higher");
   }
 
-  if (occupationLooksEligible(s.occupationCodeOrName)) {
+  // 189 is points-tested independent — MLTSSL membership only.
+  if (occupationOnLists(s.occupationCodeOrName, ["MLTSSL"])) {
     matched.push("Occupation appears on a points-tested skilled list");
     baseScore += 15;
   } else if (
@@ -115,6 +116,13 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
     );
   } else {
     matched.push(`Estimated points ${pts} (above the typical 85-point invitation cutoff)`);
+  }
+
+  // Competitiveness dampener: 65 points makes you eligible, not invited.
+  // 2025-26 rounds cleared at ~85-95 for general/ICT occupations, so a
+  // profile short of 85 shouldn't outrank realistic sponsored/WHV options.
+  if (pts < 85) {
+    baseScore -= Math.min(20, (85 - pts) / 2);
   }
 
   let statusHint: SubclassEvaluation["statusHint"] = "potentially_eligible";

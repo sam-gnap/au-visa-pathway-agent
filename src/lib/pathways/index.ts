@@ -6,6 +6,7 @@ import type {
   VisaSubclassId,
 } from "@/types";
 import { pathwayEdges } from "./edges";
+import { evaluators } from "@/rules";
 
 export { pathwayEdges } from "./edges";
 
@@ -46,6 +47,11 @@ function isTerminalForGoal(goal: Goal, node: GraphNode): boolean {
  * Pick a sensible entry node when the user has no recognised current visa.
  * Outside-AU users typically start at a study or mobility entry; inside-AU
  * users without a known subclass fall back to a generic entry per goal.
+ *
+ * Candidate entries are filtered against the rule evaluators: a subclass the
+ * user is hard-blocked from (wrong nationality, over an age cap, no sponsor)
+ * is not a real entry point, so proposing it would be misleading. The visa
+ * the user already holds is never filtered — they hold it.
  */
 function chooseEntryNodes(situation: UserSituation): GraphNode[] {
   const current = situation.currentVisaSubclass;
@@ -54,7 +60,7 @@ function chooseEntryNodes(situation: UserSituation): GraphNode[] {
   }
 
   // No recognised current subclass — propose plausible entry nodes by goal.
-  const entries: GraphNode[] = [];
+  const entries: VisaSubclassId[] = [];
   switch (situation.goal) {
     case "study":
       entries.push("500");
@@ -63,13 +69,22 @@ function chooseEntryNodes(situation: UserSituation): GraphNode[] {
       entries.push("417", "462", "500");
       break;
     case "work":
-      entries.push("482", "500");
+      // WHV -> sponsored 482 is the most common route into skilled work for
+      // partner-country nationals; 500 covers the study-first route.
+      entries.push("482", "417", "462", "500");
       break;
     case "pr":
-      entries.push("189", "190", "491", "500");
+      entries.push("189", "190", "491", "417", "462", "500");
+      // Direct employer-sponsored entries only make sense with a sponsor.
+      if (situation.hasEligibleEmployerSponsor) {
+        entries.push("482", "186");
+      }
       break;
   }
-  return entries;
+
+  return entries.filter(
+    (id) => evaluators[id](situation).blockers.length === 0,
+  );
 }
 
 /**
@@ -193,7 +208,18 @@ export function findPathways(situation: UserSituation, goal: Goal): VisaPathway[
     return true;
   });
 
-  unique.sort((a, b) => totalWeight(a.edges) - totalWeight(b.edges));
+  // Shortest first; ties broken by how well the entry visa fits the user
+  // (so e.g. a state-nominated applicant sees 190 -> PR before 189 -> PR).
+  const entryFit = (p: { nodes: GraphNode[] }): number => {
+    const entry = p.nodes[0];
+    if (!(SUPPORTED_SUBCLASSES as string[]).includes(entry as string)) return 0;
+    return evaluators[entry as VisaSubclassId](situation).baseScore;
+  };
+  unique.sort((a, b) => {
+    const w = totalWeight(a.edges) - totalWeight(b.edges);
+    if (w !== 0) return w;
+    return entryFit(b) - entryFit(a);
+  });
 
   return unique.slice(0, 5).map<VisaPathway>((p) => ({
     nodes: p.nodes,

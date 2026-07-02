@@ -174,6 +174,48 @@ export const pathwayEdges: PathwayEdge[] = [
   },
   {
     from: "417",
+    to: "482",
+    conditions: [
+      "Secure an approved employer sponsor while working on the 417",
+      "Nominated occupation on the Core Skills Occupation List",
+      "Salary at or above the Core Skills Income Threshold (AUD 76,515 in 2025-26)",
+    ],
+    indicativeTimeframe: "0.5-1 year while on the working holiday",
+    risks: [
+      "417 holders generally cannot work more than 6 months for one employer, which limits time to prove yourself before nomination",
+      "Start the sponsorship process well before the 417 expires — nomination and visa processing take months",
+    ],
+    sources: [
+      {
+        title: "Skills in Demand visa (subclass 482) — Home Affairs",
+        url: "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+        lastChecked: LAST_CHECKED,
+      },
+    ],
+  },
+  {
+    from: "462",
+    to: "482",
+    conditions: [
+      "Secure an approved employer sponsor while working on the 462",
+      "Nominated occupation on the Core Skills Occupation List",
+      "Salary at or above the Core Skills Income Threshold (AUD 76,515 in 2025-26)",
+    ],
+    indicativeTimeframe: "0.5-1 year while on the work and holiday",
+    risks: [
+      "462 holders generally cannot work more than 6 months for one employer, which limits time to prove yourself before nomination",
+      "Start the sponsorship process well before the 462 expires — nomination and visa processing take months",
+    ],
+    sources: [
+      {
+        title: "Skills in Demand visa (subclass 482) — Home Affairs",
+        url: "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/skills-in-demand-visa-subclass-482",
+        lastChecked: LAST_CHECKED,
+      },
+    ],
+  },
+  {
+    from: "417",
     to: "500",
     conditions: [
       "Enrol in a CRICOS-registered course",

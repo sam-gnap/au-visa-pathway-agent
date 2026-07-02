@@ -137,12 +137,15 @@ export function checkEligibility(situation: UserSituation): VisaVerdict[] {
     const aBlocked = a.blockers.length > 0 ? 1 : 0;
     const bBlocked = b.blockers.length > 0 ? 1 : 0;
     if (aBlocked !== bBlocked) return aBlocked - bBlocked; // unblocked first
-    // Status quality beats raw score — without this, ties at 100 produce
-    // unstable ordering and bury "likely_eligible" results behind equally
-    // scored "potentially_eligible" ones.
+    // Score first so the goal boost can rank a strong goal-aligned subclass
+    // above an easier but goal-mismatched one (e.g. 189 over 417 when the
+    // goal is PR). Status quality breaks score ties so equal-scored
+    // "likely_eligible" results never get buried behind "potentially_eligible"
+    // ones, and subclassId keeps the order deterministic.
+    if (a.score !== b.score) return b.score - a.score;
     const statusDiff = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
     if (statusDiff !== 0) return statusDiff;
-    return b.score - a.score;
+    return a.subclassId.localeCompare(b.subclassId);
   });
 
   return verdicts;

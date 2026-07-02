@@ -9,7 +9,7 @@ import {
   LAST_CHECKED,
   QUAL_RANK,
   estimatePoints,
-  occupationLooksEligible,
+  occupationOnLists,
 } from "./_shared";
 
 export const rule: VisaSubclassRule = {
@@ -79,7 +79,7 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
     missing.push("Competent English or higher");
   }
 
-  if (occupationLooksEligible(s.occupationCodeOrName)) {
+  if (occupationOnLists(s.occupationCodeOrName, ["MLTSSL", "STSOL", "ROL"])) {
     matched.push("Occupation likely on a 491-eligible list");
     baseScore += 10;
   } else if (

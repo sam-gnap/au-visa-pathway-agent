@@ -7,7 +7,7 @@ import type {
 import {
   ENGLISH_RANK,
   LAST_CHECKED,
-  occupationLooksEligible,
+  occupationOnLists,
 } from "./_shared";
 
 export const rule: VisaSubclassRule = {
@@ -68,7 +68,7 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
     blockers.push("No eligible employer sponsor — 482 cannot proceed");
   }
 
-  if (occupationLooksEligible(s.occupationCodeOrName)) {
+  if (occupationOnLists(s.occupationCodeOrName, ["CSOL"])) {
     matched.push("Occupation likely on a 482-eligible list");
     baseScore += 15;
   } else if (

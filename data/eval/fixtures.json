@@ -23,13 +23,35 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "190": { "status": ["potentially_eligible"], "mustNotBeBlocked": true },
-          "417": { "mustBeBlocked": true },
-          "462": { "mustBeBlocked": true }
+          "189": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "190": {
+            "status": [
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "417": {
+            "mustBeBlocked": true
+          },
+          "462": {
+            "mustBeBlocked": true
+          }
         },
-        "topRanked": ["189"],
-        "notTopRanked": ["417", "462", "485", "500"],
+        "topRanked": [
+          "189"
+        ],
+        "notTopRanked": [
+          "417",
+          "462",
+          "485",
+          "500"
+        ],
         "expectsAnyPathway": true
       }
     },
@@ -54,12 +76,29 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "status": "not_eligible", "mustBeBlocked": true },
-          "190": { "status": "not_eligible", "mustBeBlocked": true },
-          "491": { "status": "not_eligible", "mustBeBlocked": true },
-          "186": { "status": "not_eligible", "mustBeBlocked": true }
+          "189": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "190": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "491": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "186": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         },
-        "notTopRanked": ["189", "190", "491", "186"]
+        "notTopRanked": [
+          "189",
+          "190",
+          "491",
+          "186"
+        ]
       }
     },
     {
@@ -83,15 +122,33 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "status": ["potentially_eligible", "insufficient_evidence"], "mustNotBeBlocked": true },
-          "190": { "status": ["potentially_eligible", "insufficient_evidence"], "mustNotBeBlocked": true },
-          "491": { "status": ["potentially_eligible", "insufficient_evidence"], "mustNotBeBlocked": true }
+          "189": {
+            "status": [
+              "potentially_eligible",
+              "insufficient_evidence"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "190": {
+            "status": [
+              "potentially_eligible",
+              "insufficient_evidence"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "491": {
+            "status": [
+              "potentially_eligible",
+              "insufficient_evidence"
+            ],
+            "mustNotBeBlocked": true
+          }
         }
       }
     },
     {
       "id": "skilled-non-listed-occupation-blocked",
-      "description": "An occupation the engine knows is NOT on the supported list (recognised string but not in points list) should produce a blocker for 189.",
+      "description": "An occupation on STSOL but not MLTSSL (Florist) must block 189 (MLTSSL-only) while remaining unblocked for 190 (MLTSSL+STSOL).",
       "situation": {
         "nationality": "India",
         "age": 30,
@@ -110,8 +167,13 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "status": "not_eligible", "mustBeBlocked": true },
-          "190": { "status": "not_eligible", "mustBeBlocked": true }
+          "189": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "190": {
+            "mustNotBeBlocked": true
+          }
         }
       }
     },
@@ -136,13 +198,30 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "mustNotBeBlocked": true },
-          "186": { "mustBeBlocked": true },
-          "482": { "mustBeBlocked": true },
-          "190": { "mustNotBeBlocked": true }
+          "189": {
+            "mustNotBeBlocked": true
+          },
+          "186": {
+            "mustBeBlocked": true
+          },
+          "482": {
+            "mustBeBlocked": true
+          },
+          "190": {
+            "mustNotBeBlocked": true
+          }
         },
-        "topRanked": ["189"],
-        "notTopRanked": ["482", "186", "417", "462", "500", "485"]
+        "topRanked": [
+          "189"
+        ],
+        "notTopRanked": [
+          "482",
+          "186",
+          "417",
+          "462",
+          "500",
+          "485"
+        ]
       }
     },
     {
@@ -166,11 +245,27 @@
       },
       "expectations": {
         "verdicts": {
-          "190": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "189": { "mustNotBeBlocked": true }
+          "190": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "189": {
+            "mustNotBeBlocked": true
+          }
         },
-        "topRanked": ["190", "189"],
-        "notTopRanked": ["417", "462", "500", "485"]
+        "topRanked": [
+          "190",
+          "189"
+        ],
+        "notTopRanked": [
+          "417",
+          "462",
+          "500",
+          "485"
+        ]
       }
     },
     {
@@ -194,10 +289,22 @@
       },
       "expectations": {
         "verdicts": {
-          "491": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "189": { "mustNotBeBlocked": true }
+          "491": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "189": {
+            "mustNotBeBlocked": true
+          }
         },
-        "notTopRanked": ["417", "462", "485"]
+        "notTopRanked": [
+          "417",
+          "462",
+          "485"
+        ]
       }
     },
     {
@@ -221,8 +328,13 @@
       },
       "expectations": {
         "verdicts": {
-          "491": { "status": "not_eligible", "mustBeBlocked": true },
-          "189": { "mustNotBeBlocked": true }
+          "491": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "189": {
+            "mustNotBeBlocked": true
+          }
         }
       }
     },
@@ -248,9 +360,23 @@
       },
       "expectations": {
         "verdicts": {
-          "482": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "186": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "189": { "mustNotBeBlocked": true }
+          "482": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "186": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "189": {
+            "mustNotBeBlocked": true
+          }
         }
       }
     },
@@ -275,8 +401,14 @@
       },
       "expectations": {
         "verdicts": {
-          "482": { "status": "not_eligible", "mustBeBlocked": true },
-          "186": { "status": "not_eligible", "mustBeBlocked": true }
+          "482": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "186": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -301,11 +433,25 @@
       },
       "expectations": {
         "verdicts": {
-          "417": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "462": { "mustBeBlocked": true }
+          "417": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "462": {
+            "mustBeBlocked": true
+          }
         },
-        "topRanked": ["417"],
-        "notTopRanked": ["189", "190", "186"]
+        "topRanked": [
+          "417"
+        ],
+        "notTopRanked": [
+          "189",
+          "190",
+          "186"
+        ]
       }
     },
     {
@@ -329,8 +475,14 @@
       },
       "expectations": {
         "verdicts": {
-          "417": { "status": "not_eligible", "mustBeBlocked": true },
-          "462": { "status": "not_eligible", "mustBeBlocked": true }
+          "417": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "462": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -355,10 +507,21 @@
       },
       "expectations": {
         "verdicts": {
-          "462": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "417": { "status": "not_eligible", "mustBeBlocked": true }
+          "462": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "417": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         },
-        "topRanked": ["462"]
+        "topRanked": [
+          "462"
+        ]
       }
     },
     {
@@ -382,7 +545,13 @@
       },
       "expectations": {
         "verdicts": {
-          "417": { "status": ["potentially_eligible", "likely_eligible"], "mustNotBeBlocked": true }
+          "417": {
+            "status": [
+              "potentially_eligible",
+              "likely_eligible"
+            ],
+            "mustNotBeBlocked": true
+          }
         }
       }
     },
@@ -407,7 +576,10 @@
       },
       "expectations": {
         "verdicts": {
-          "417": { "status": "not_eligible", "mustBeBlocked": true }
+          "417": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -432,10 +604,22 @@
       },
       "expectations": {
         "verdicts": {
-          "500": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+          "500": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          }
         },
-        "topRanked": ["500"],
-        "notTopRanked": ["189", "186", "482"]
+        "topRanked": [
+          "500"
+        ],
+        "notTopRanked": [
+          "189",
+          "186",
+          "482"
+        ]
       }
     },
     {
@@ -459,7 +643,10 @@
       },
       "expectations": {
         "verdicts": {
-          "500": { "status": "not_eligible", "mustBeBlocked": true }
+          "500": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -485,7 +672,13 @@
       },
       "expectations": {
         "verdicts": {
-          "485": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+          "485": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          }
         },
         "expectsAnyPathway": true
       }
@@ -511,7 +704,10 @@
       },
       "expectations": {
         "verdicts": {
-          "485": { "status": "not_eligible", "mustBeBlocked": true }
+          "485": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -537,7 +733,10 @@
       },
       "expectations": {
         "verdicts": {
-          "485": { "status": "not_eligible", "mustBeBlocked": true }
+          "485": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -561,8 +760,15 @@
         "goal": "pr"
       },
       "expectations": {
-        "topRanked": ["189"],
-        "notTopRanked": ["417", "462", "500", "485"]
+        "topRanked": [
+          "189"
+        ],
+        "notTopRanked": [
+          "417",
+          "462",
+          "500",
+          "485"
+        ]
       }
     },
     {
@@ -585,8 +791,14 @@
         "goal": "temporary"
       },
       "expectations": {
-        "topRanked": ["417"],
-        "notTopRanked": ["189", "186", "500"]
+        "topRanked": [
+          "417"
+        ],
+        "notTopRanked": [
+          "189",
+          "186",
+          "500"
+        ]
       }
     },
     {
@@ -611,13 +823,48 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "190": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "491": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "186": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
-          "482": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+          "189": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "190": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "491": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "186": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          },
+          "482": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          }
         },
-        "topRanked": ["189", "190", "186", "491"],
+        "topRanked": [
+          "189",
+          "190",
+          "186",
+          "491"
+        ],
         "expectsAnyPathway": true
       }
     },
@@ -642,10 +889,25 @@
       },
       "expectations": {
         "verdicts": {
-          "189": { "status": ["insufficient_evidence", "potentially_eligible"] },
-          "190": { "status": ["insufficient_evidence", "potentially_eligible", "not_eligible"] },
-          "186": { "mustBeBlocked": true },
-          "482": { "mustBeBlocked": true }
+          "189": {
+            "status": [
+              "insufficient_evidence",
+              "potentially_eligible"
+            ]
+          },
+          "190": {
+            "status": [
+              "insufficient_evidence",
+              "potentially_eligible",
+              "not_eligible"
+            ]
+          },
+          "186": {
+            "mustBeBlocked": true
+          },
+          "482": {
+            "mustBeBlocked": true
+          }
         }
       }
     },
@@ -670,9 +932,17 @@
       },
       "expectations": {
         "verdicts": {
-          "500": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+          "500": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          }
         },
-        "topRanked": ["500"]
+        "topRanked": [
+          "500"
+        ]
       }
     },
     {
@@ -696,8 +966,17 @@
       },
       "expectations": {
         "verdicts": {
-          "491": { "status": "not_eligible", "mustBeBlocked": true },
-          "190": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+          "491": {
+            "status": "not_eligible",
+            "mustBeBlocked": true
+          },
+          "190": {
+            "status": [
+              "likely_eligible",
+              "potentially_eligible"
+            ],
+            "mustNotBeBlocked": true
+          }
         }
       }
     }

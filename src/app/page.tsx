@@ -1,16 +1,31 @@
 import Link from "next/link";
+import { allRules } from "@/rules";
 
 export default function HomePage() {
   return (
-    <section>
-      <h1 className="landing__title">AU Visa Pathway Agent</h1>
+    <section className="landing">
+      <p className="landing__eyebrow">Skilled &middot; study &middot; working holiday &middot; employer sponsored</p>
+      <h1 className="landing__title">
+        Which Australian visa
+        <br />
+        fits <em>your</em> situation?
+      </h1>
       <p className="landing__lead">
-        A structured wizard that walks through your situation and returns
-        ranked Australian visa subclass results with rule-based reasons,
-        source links, and plausible pathway sketches toward permanent
-        residence. Recommendations come from hand-encoded rules and a
-        pathway graph — not from an unconstrained chatbot.
+        Answer a short set of questions about your age, occupation, English,
+        and goals. Get a ranked shortlist of visa options — what works in your
+        favour, what&apos;s standing in the way, and realistic step-by-step
+        routes toward permanent residence, each linked to the official
+        requirements.
       </p>
+
+      <div className="landing__actions">
+        <Link href="/wizard" className="btn btn--primary btn--lg">
+          Check my options
+        </Link>
+        <span className="landing__actions-note">
+          Free &middot; about 5 minutes &middot; no sign-up
+        </span>
+      </div>
 
       <div className="landing__disclaimer" role="note">
         <strong>This is not migration advice.</strong>
@@ -20,20 +35,40 @@ export default function HomePage() {
         your visa.
       </div>
 
-      <p>
-        <Link href="/wizard" className="btn btn--primary">
-          Start the wizard
-        </Link>
-      </p>
-
-      <section style={{ marginTop: "2.5rem" }}>
-        <h2>What you&apos;ll see</h2>
-        <ul>
-          <li>Ranked verdicts for all 9 in-scope visa subclasses (189, 190, 491, 482, 186, 417, 462, 485, 500).</li>
-          <li>Status, score, matched criteria, blockers, and next steps for each subclass.</li>
-          <li>Plausible pathway sketches with indicative timeframes and risks.</li>
-          <li>Source links to Department of Home Affairs pages for each rule.</li>
+      <section className="landing__section">
+        <h2 className="landing__section-title">Visas covered</h2>
+        <ul className="subclass-grid">
+          {allRules.map((rule) => (
+            <li key={rule.subclassId} className="subclass-chip">
+              <span className="subclass-chip__code">{rule.subclassId}</span>
+              <span className="subclass-chip__name">
+                {rule.displayName.split(" (")[0]}
+              </span>
+            </li>
+          ))}
         </ul>
+      </section>
+
+      <section className="landing__section">
+        <h2 className="landing__section-title">What you get</h2>
+        <ol className="landing__features">
+          <li>
+            <strong>Your options, ranked</strong> — every visa scored against
+            your situation, with the reasons spelled out.
+          </li>
+          <li>
+            <strong>Blockers and next steps</strong> — what rules you don&apos;t
+            meet yet, and what would change the outcome.
+          </li>
+          <li>
+            <strong>Routes to permanent residence</strong> — multi-step
+            pathways with indicative timeframes and the risks along the way.
+          </li>
+          <li>
+            <strong>Official sources</strong> — every result links to the
+            Department of Home Affairs page it&apos;s based on.
+          </li>
+        </ol>
       </section>
     </section>
   );

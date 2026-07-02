@@ -6,6 +6,7 @@ import type {
   Qualification,
   UserSituation,
 } from "@/types";
+import { OCCUPATIONS, findOccupation } from "@/lib/occupations";
 
 /**
  * Per-field validation error surfaced to the wizard UI.
@@ -53,46 +54,27 @@ const FUNDS_BANDS: readonly FundsBand[] = [
 const GOALS: readonly Goal[] = ["temporary", "study", "work", "pr"] as const;
 
 /**
- * Hand-encoded list of ANZSCO-like occupations the MVP can reason about.
- * Anything outside this list is not silently rejected: the eligibility engine
- * should produce `insufficient_evidence` (see MVP_REQUIREMENTS §Wizard validation).
+ * Occupations the MVP can reason about — the full ANZSCO + Home Affairs
+ * dataset from `data/occupations.json` (via `@/lib/occupations`), not a
+ * separate hand-coded subset. Anything outside this list is not silently
+ * rejected: the eligibility engine should produce `insufficient_evidence`
+ * (see MVP_REQUIREMENTS §Wizard validation).
  */
-export const supportedOccupations: ReadonlyArray<{ code: string; name: string }> = [
-  { code: "261313", name: "Software Engineer" },
-  { code: "254499", name: "Registered Nurse" },
-  { code: "221111", name: "Accountant" },
-  { code: "341111", name: "Electrician" },
-  { code: "331212", name: "Carpenter" },
-  { code: "233211", name: "Civil Engineer" },
-  { code: "241411", name: "Secondary School Teacher" },
-  { code: "351311", name: "Chef" },
-  { code: "233512", name: "Mechanical Engineer" },
-  { code: "261111", name: "ICT Business Analyst" },
-  { code: "261312", name: "Developer Programmer" },
-  { code: "241111", name: "Early Childhood Teacher" },
-  { code: "253111", name: "General Practitioner" },
-  { code: "133111", name: "Construction Project Manager" },
-  { code: "221213", name: "Auditor" },
-];
+export const supportedOccupations: ReadonlyArray<{ code: string; name: string }> =
+  OCCUPATIONS.map((o) => ({ code: o.code, name: o.name }));
 
 /**
- * Returns true if `occupation` matches a supported ANZSCO-like code or name
- * (case-insensitive substring on names; exact match on codes).
+ * Returns true if `occupation` resolves against the occupation dataset —
+ * same matching rules the rule engine uses (`findOccupation`), so the
+ * wizard's "unsupported occupation" note can never disagree with the
+ * verdicts.
  *
  * Caller should treat `false` as "unknown" and surface insufficient_evidence,
  * NOT as a validation failure.
  */
 export function isSupportedOccupation(occupation: string): boolean {
   if (typeof occupation !== "string") return false;
-  const trimmed = occupation.trim();
-  if (!trimmed) return false;
-  const lower = trimmed.toLowerCase();
-  for (const entry of supportedOccupations) {
-    if (trimmed === entry.code) return true;
-    if (lower.includes(entry.name.toLowerCase())) return true;
-    if (entry.name.toLowerCase().includes(lower) && lower.length >= 4) return true;
-  }
-  return false;
+  return findOccupation(occupation) !== undefined;
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
