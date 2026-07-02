@@ -301,3 +301,18 @@ describe("485 recency priority", () => {
     expect(rank485).toBeLessThan(rank189);
   });
 });
+
+describe("417 age-35 cap (1 Jul 2026, LIN 26/048)", () => {
+  it("grants the higher 35 cap to a 33-year-old German (added 2026-07-02)", () => {
+    const v = byId(checkEligibility(baseSituation({ nationality: "Germany", age: 33 })));
+    const whv = v.get("417")!;
+    expect(whv.blockers).toHaveLength(0);
+    expect(whv.matchedCriteria.some((m) => m.includes("35 age cap"))).toBe(true);
+  });
+
+  it("still caps a 33-year-old Dutch applicant at 30 (no higher-cap agreement)", () => {
+    const v = byId(checkEligibility(baseSituation({ nationality: "Netherlands", age: 33 })));
+    const whv = v.get("417")!;
+    expect(whv.matchedCriteria.some((m) => m.includes("35 age cap"))).toBe(false);
+  });
+});

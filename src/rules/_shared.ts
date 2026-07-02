@@ -42,6 +42,7 @@ export const WHV_417_COUNTRIES = [
   "denmark",
   "norway",
   "finland",
+  "cyprus",
   "taiwan",
   "hong kong",
 ];
@@ -53,6 +54,8 @@ export const WHV_417_COUNTRIES = [
  *  - UK: AU-UK FTA, age raised 1 Jul 2023.
  *  - Ireland, Canada, Denmark: long-standing 35 cap.
  *  - France, Italy: raised in 2024 bilateral updates.
+ *  - Cyprus, Finland, Germany, South Korea: raised 1 Jul 2026 via
+ *    Migration (Arrangements for Subclass 417) Instrument 2026 (LIN 26/048).
  */
 export const WHV_417_HIGHER_AGE_CAP_COUNTRIES = [
   "united kingdom",
@@ -62,6 +65,11 @@ export const WHV_417_HIGHER_AGE_CAP_COUNTRIES = [
   "denmark",
   "france",
   "italy",
+  "cyprus",
+  "finland",
+  "germany",
+  "south korea",
+  "korea",
 ];
 
 export function has417HigherAgeCap(nationality: string): boolean {

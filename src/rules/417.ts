@@ -4,7 +4,13 @@ import type {
   UserSituation,
   VisaSubclassRule,
 } from "@/types";
-import { LAST_CHECKED, has417HigherAgeCap, isWhv417Country } from "./_shared";
+import { has417HigherAgeCap, isWhv417Country } from "./_shared";
+
+// 417 rule re-verified 2026-07-02 for the 1 Jul 2026 age-cap change
+// (Cyprus, Finland, Germany, South Korea → 35; LIN 26/048). Kept local
+// rather than bumping the shared LAST_CHECKED, which would imply every
+// subclass was re-checked on this date.
+const CHECKED_417 = "2026-07-02";
 
 export const rule: VisaSubclassRule = {
   subclassId: "417",
@@ -34,15 +40,15 @@ export const rule: VisaSubclassRule = {
     {
       title: "Working Holiday visa (subclass 417) — Home Affairs",
       url: "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/work-holiday-417",
-      lastChecked: LAST_CHECKED,
+      lastChecked: CHECKED_417,
     },
     {
       title: "Working Holiday Maker program — Home Affairs",
       url: "https://immi.homeaffairs.gov.au/what-we-do/whm-program",
-      lastChecked: LAST_CHECKED,
+      lastChecked: CHECKED_417,
     },
   ],
-  lastCheckedDate: LAST_CHECKED,
+  lastCheckedDate: CHECKED_417,
   caveat:
     "Rules are simplified for portfolio/demo use. Partner country list and age caps are determined by bilateral agreements and change. Some countries have higher age limits (e.g. 35).",
 };
