@@ -146,7 +146,8 @@ export function effectiveDifficulty(
  */
 export function scoreExplainer(score: number, blockers: number): string {
   if (blockers > 0) return "Hard blocker present — score is informational only.";
-  if (score >= 85) return "Very strong profile fit for this subclass.";
+  if (score >= 85)
+    return "Your profile matches this visa's criteria closely — the difficulty rating reflects competition, not your fit.";
   if (score >= 70) return "Strong fit — most prerequisites already in place.";
   if (score >= 55) return "Workable fit, but several items need attention.";
   if (score >= 40) return "Borderline — significant gaps to close before this becomes viable.";

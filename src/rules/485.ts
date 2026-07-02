@@ -83,6 +83,17 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
     missing.push("Australian diploma or higher consistent with 485 streams");
   }
 
+  // Recency priority: the 485 must be applied for within 6 months of course
+  // completion — a use-it-or-lose-it window. For someone still on a student
+  // visa with completed AU study, it is the natural (and time-critical) next
+  // step, so it should outrank slower speculative options.
+  if (s.currentVisaSubclass === "500" && s.australianStudyCompleted) {
+    matched.push(
+      "Currently on a student visa with completed study — the 485 application window (6 months from course completion) is time-limited",
+    );
+    baseScore += 15;
+  }
+
   let statusHint: SubclassEvaluation["statusHint"] = "potentially_eligible";
   if (blockers.length > 0) statusHint = "not_eligible";
   else if (matched.length >= 3 && missing.length === 0) statusHint = "likely_eligible";

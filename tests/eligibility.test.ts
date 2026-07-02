@@ -278,3 +278,26 @@ describe("optional enrichment fields", () => {
     );
   });
 });
+
+describe("485 recency priority", () => {
+  it("ranks the time-limited 485 above a marginal 189 for a fresh graduate on a 500", () => {
+    const verdicts = checkEligibility(
+      baseSituation({
+        nationality: "South Korea",
+        age: 25,
+        currentLocation: "inside_australia",
+        currentVisaSubclass: "500",
+        occupationCodeOrName: "ICT Business Analyst",
+        englishLevel: "proficient",
+        australianStudyCompleted: true,
+        yearsRelevantExperience: 1,
+        partnerStatus: "single",
+        skillsAssessment: "in_progress",
+        goal: "pr",
+      }),
+    );
+    const rank485 = verdicts.findIndex((v) => v.subclassId === "485");
+    const rank189 = verdicts.findIndex((v) => v.subclassId === "189");
+    expect(rank485).toBeLessThan(rank189);
+  });
+});
