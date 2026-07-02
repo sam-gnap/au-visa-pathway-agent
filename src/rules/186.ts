@@ -8,6 +8,7 @@ import {
   ENGLISH_RANK,
   LAST_CHECKED,
   occupationOnLists,
+  applySkillsAssessment,
 } from "./_shared";
 
 export const rule: VisaSubclassRule = {
@@ -100,6 +101,8 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
   } else {
     missing.push("Around 3 years of relevant work experience");
   }
+
+  baseScore += applySkillsAssessment(s, matched, missing);
 
   let statusHint: SubclassEvaluation["statusHint"] = "potentially_eligible";
   if (blockers.length > 0) statusHint = "not_eligible";

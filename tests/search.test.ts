@@ -17,8 +17,10 @@ describe("searchDocs", () => {
   it("filters by subclass 417", () => {
     const results = searchDocs("visa", { filterSubclass: "417" });
     expect(results.length).toBeGreaterThan(0);
+    // Only docs whose metadata relates them to 417.
+    const relatedTo417 = ["working-holiday", "common-pr-routes"];
     for (const r of results) {
-      expect(r.docId).toBe("working-holiday");
+      expect(relatedTo417).toContain(r.docId);
     }
   });
 

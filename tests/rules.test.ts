@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { allRules, evaluators, rulesById } from "@/rules";
+import { estimatePoints } from "@/rules/_shared";
 import type { UserSituation, VisaSubclassId } from "@/types";
 
 const SUPPORTED: VisaSubclassId[] = [
@@ -91,5 +92,34 @@ describe("rules dataset", () => {
     for (const id of SUPPORTED) {
       expect(rulesById[id].subclassId).toBe(id);
     }
+  });
+});
+
+describe("estimatePoints partner status", () => {
+  const base: UserSituation = {
+    nationality: "United Kingdom",
+    age: 28,
+    currentLocation: "outside_australia",
+    occupationCodeOrName: "software engineer",
+    englishLevel: "proficient",
+    highestQualification: "bachelor",
+    australianStudyCompleted: false,
+    yearsRelevantExperience: 5,
+    hasEligibleEmployerSponsor: false,
+    hasStateNomination: false,
+    willingToLiveRegional: false,
+    studyIntent: false,
+    fundsBand: "20k_50k",
+    goal: "pr",
+  };
+
+  it("single and skilled-partner score 10 points more than unskilled partner; unknown stays conservative", () => {
+    const unknown = estimatePoints(base);
+    const single = estimatePoints({ ...base, partnerStatus: "single" });
+    const skilled = estimatePoints({ ...base, partnerStatus: "partner_skilled" });
+    const unskilled = estimatePoints({ ...base, partnerStatus: "partner_not_skilled" });
+    expect(single).toBe(unknown + 10);
+    expect(skilled).toBe(unknown + 10);
+    expect(unskilled).toBe(unknown);
   });
 });

@@ -3,7 +3,10 @@ import type {
   FundsBand,
   Goal,
   Location,
+  PartnerStatus,
   Qualification,
+  SalaryBand,
+  SkillsAssessmentStatus,
   UserSituation,
 } from "@/types";
 import { OCCUPATIONS, findOccupation } from "@/lib/occupations";
@@ -52,6 +55,25 @@ const FUNDS_BANDS: readonly FundsBand[] = [
 ] as const;
 
 const GOALS: readonly Goal[] = ["temporary", "study", "work", "pr"] as const;
+
+const SKILLS_ASSESSMENTS: readonly SkillsAssessmentStatus[] = [
+  "yes",
+  "in_progress",
+  "no",
+] as const;
+
+const PARTNER_STATUSES: readonly PartnerStatus[] = [
+  "single",
+  "partner_skilled",
+  "partner_not_skilled",
+] as const;
+
+const SALARY_BANDS: readonly SalaryBand[] = [
+  "under_76k",
+  "76k_to_141k",
+  "over_141k",
+  "unknown",
+] as const;
 
 /**
  * Occupations the MVP can reason about — the full ANZSCO + Home Affairs
@@ -261,6 +283,32 @@ export function validateSituation(input: unknown): ValidationResult {
 
   const goal = checkEnum<Goal>(input.goal, GOALS, "goal", errors);
 
+  // Optional enrichment fields — validated only when present.
+  const checkOptionalEnum = <T extends string>(
+    value: unknown,
+    allowed: readonly T[],
+    field: string,
+  ): T | undefined => {
+    if (value === undefined || value === null || value === "") return undefined;
+    return checkEnum<T>(value, allowed, field, errors);
+  };
+
+  const skillsAssessment = checkOptionalEnum<SkillsAssessmentStatus>(
+    input.skillsAssessment,
+    SKILLS_ASSESSMENTS,
+    "skillsAssessment",
+  );
+  const partnerStatus = checkOptionalEnum<PartnerStatus>(
+    input.partnerStatus,
+    PARTNER_STATUSES,
+    "partnerStatus",
+  );
+  const salaryBand = checkOptionalEnum<SalaryBand>(
+    input.salaryBand,
+    SALARY_BANDS,
+    "salaryBand",
+  );
+
   if (errors.length > 0) {
     return { ok: false, errors };
   }
@@ -285,5 +333,8 @@ export function validateSituation(input: unknown): ValidationResult {
   if (currentVisaSubclass !== undefined) {
     value.currentVisaSubclass = currentVisaSubclass;
   }
+  if (skillsAssessment !== undefined) value.skillsAssessment = skillsAssessment;
+  if (partnerStatus !== undefined) value.partnerStatus = partnerStatus;
+  if (salaryBand !== undefined) value.salaryBand = salaryBand;
   return { ok: true, value };
 }

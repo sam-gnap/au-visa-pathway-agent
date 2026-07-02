@@ -153,3 +153,61 @@ describe("isSupportedOccupation", () => {
     expect(supportedOccupations.length).toBeGreaterThanOrEqual(15);
   });
 });
+
+describe("dataset-backed occupation support", () => {
+  it("recognises occupations from data/occupations.json, not just a hand-coded subset", () => {
+    expect(isSupportedOccupation("Data Scientist")).toBe(true);
+    expect(isSupportedOccupation("224115")).toBe(true);
+    expect(isSupportedOccupation("Florist")).toBe(true);
+  });
+});
+
+describe("optional enrichment fields validation", () => {
+  const base = {
+    nationality: "United Kingdom",
+    age: 28,
+    currentLocation: "outside_australia",
+    occupationCodeOrName: "software engineer",
+    englishLevel: "competent",
+    highestQualification: "bachelor",
+    australianStudyCompleted: false,
+    yearsRelevantExperience: 3,
+    hasEligibleEmployerSponsor: false,
+    hasStateNomination: false,
+    willingToLiveRegional: false,
+    studyIntent: false,
+    fundsBand: "20k_50k",
+    goal: "pr",
+  };
+
+  it("accepts valid optional fields and passes them through", () => {
+    const res = validateSituation({
+      ...base,
+      skillsAssessment: "yes",
+      partnerStatus: "single",
+      salaryBand: "76k_to_141k",
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.value.skillsAssessment).toBe("yes");
+      expect(res.value.partnerStatus).toBe("single");
+      expect(res.value.salaryBand).toBe("76k_to_141k");
+    }
+  });
+
+  it("accepts their absence", () => {
+    const res = validateSituation(base);
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.value.skillsAssessment).toBeUndefined();
+    }
+  });
+
+  it("rejects invalid enum values when present", () => {
+    const res = validateSituation({ ...base, salaryBand: "banana" });
+    expect(res.ok).toBe(false);
+    if (!res.ok) {
+      expect(res.errors.some((e) => e.field === "salaryBand")).toBe(true);
+    }
+  });
+});

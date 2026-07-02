@@ -172,3 +172,109 @@ describe("checkEligibility", () => {
     );
   });
 });
+
+describe("per-visa occupation lists", () => {
+  it("an STSOL-only occupation (Florist) blocks 189 but not 190", () => {
+    const v = byId(
+      checkEligibility(baseSituation({ occupationCodeOrName: "Florist" })),
+    );
+    expect(v.get("189")!.blockers.length).toBeGreaterThan(0);
+    expect(v.get("189")!.status).toBe("not_eligible");
+    expect(v.get("190")!.blockers).toHaveLength(0);
+  });
+});
+
+describe("189 competitiveness dampener", () => {
+  it("scores a marginal points profile below a strong one, beyond the raw criteria delta", () => {
+    // Marginal: ~65 estimated points. Strong: 85+ (younger band irrelevant;
+    // superior English + inside-AU experience push it over the cutoff).
+    const marginal = byId(checkEligibility(baseSituation()));
+    const strong = byId(
+      checkEligibility(
+        baseSituation({
+          age: 30,
+          englishLevel: "superior",
+          highestQualification: "masters",
+          currentLocation: "inside_australia",
+          yearsRelevantExperience: 8,
+          australianStudyCompleted: true,
+        }),
+      ),
+    );
+    expect(strong.get("189")!.score).toBeGreaterThan(marginal.get("189")!.score);
+    expect(
+      marginal.get("189")!.missingCriteria.join(" "),
+    ).toMatch(/85\+/);
+  });
+
+  it("does not rank 189 first for a regional-willing tradesperson with marginal points", () => {
+    const verdicts = checkEligibility(
+      baseSituation({
+        nationality: "Ireland",
+        age: 30,
+        occupationCodeOrName: "Electrician (General)",
+        englishLevel: "superior",
+        highestQualification: "certificate",
+        yearsRelevantExperience: 8,
+        willingToLiveRegional: true,
+        goal: "pr",
+      }),
+    );
+    expect(verdicts[0].subclassId).not.toBe("189");
+  });
+});
+
+describe("optional enrichment fields", () => {
+  it("skills assessment 'yes' scores higher than 'no' and 'no' surfaces a missing criterion", () => {
+    const withSA = byId(
+      checkEligibility(baseSituation({ skillsAssessment: "yes" })),
+    );
+    const withoutSA = byId(
+      checkEligibility(baseSituation({ skillsAssessment: "no" })),
+    );
+    expect(withSA.get("189")!.score).toBeGreaterThan(withoutSA.get("189")!.score);
+    expect(
+      withoutSA.get("189")!.missingCriteria.some((m) => /skills assessment/i.test(m)),
+    ).toBe(true);
+  });
+
+  it("salary below the CSIT hard-blocks 482", () => {
+    const v = byId(
+      checkEligibility(
+        baseSituation({
+          hasEligibleEmployerSponsor: true,
+          salaryBand: "under_76k",
+          goal: "work",
+        }),
+      ),
+    );
+    expect(v.get("482")!.status).toBe("not_eligible");
+    expect(
+      v.get("482")!.blockers.some((b) => /Income Threshold/i.test(b)),
+    ).toBe(true);
+  });
+
+  it("unknown salary adds a missing criterion for 482 instead of blocking", () => {
+    const v = byId(
+      checkEligibility(
+        baseSituation({
+          hasEligibleEmployerSponsor: true,
+          salaryBand: "unknown",
+          goal: "work",
+        }),
+      ),
+    );
+    expect(v.get("482")!.blockers).toHaveLength(0);
+    expect(
+      v.get("482")!.missingCriteria.some((m) => /Income Threshold/i.test(m)),
+    ).toBe(true);
+  });
+
+  it("omitting the optional fields leaves verdicts unchanged", () => {
+    const a = checkEligibility(baseSituation());
+    const b = checkEligibility(baseSituation({ skillsAssessment: undefined }));
+    expect(a.map((v) => `${v.subclassId}:${v.score}:${v.status}`)).toEqual(
+      b.map((v) => `${v.subclassId}:${v.score}:${v.status}`),
+    );
+  });
+});

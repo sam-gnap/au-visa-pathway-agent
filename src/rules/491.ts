@@ -10,6 +10,7 @@ import {
   QUAL_RANK,
   estimatePoints,
   occupationOnLists,
+  applySkillsAssessment,
 } from "./_shared";
 
 export const rule: VisaSubclassRule = {
@@ -137,6 +138,8 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
   } else {
     matched.push(`Estimated points ${pts} (including +15 491 nomination)`);
   }
+
+  baseScore += applySkillsAssessment(s, matched, missing);
 
   let statusHint: SubclassEvaluation["statusHint"] = "potentially_eligible";
   if (blockers.length > 0) statusHint = "not_eligible";

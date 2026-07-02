@@ -173,12 +173,44 @@ export function estimatePoints(
   }
   // Australian study (proxy for AU qualification points)
   if (s.australianStudyCompleted) pts += 5;
+  // Partner: single and skilled-partner both score 10; a partner who doesn't
+  // meet skill/English criteria scores 0. Unknown stays 0 (conservative).
+  if (s.partnerStatus === "single" || s.partnerStatus === "partner_skilled") {
+    pts += 10;
+  }
   // State nomination / regional nomination
   if (s.hasStateNomination) pts += opts.stateNominationBonus ?? 0;
   if (s.willingToLiveRegional && s.hasStateNomination) {
     pts += opts.regionalBonus ?? 0;
   }
   return pts;
+}
+
+/**
+ * Shared skills-assessment check for the skilled visas (189/190/491/186).
+ * A suitable skills assessment is mandatory for all of them, but it is
+ * obtainable — so an absent one is a missing criterion, never a blocker.
+ * Returns the base-score delta. Undefined (not asked) changes nothing so
+ * pre-existing fixtures and personas keep their behaviour.
+ */
+export function applySkillsAssessment(
+  s: UserSituation,
+  matched: string[],
+  missing: string[],
+): number {
+  switch (s.skillsAssessment) {
+    case "yes":
+      matched.push("Suitable skills assessment already held");
+      return 5;
+    case "in_progress":
+      missing.push("Skills assessment still in progress — needed before applying");
+      return 0;
+    case "no":
+      missing.push("A suitable skills assessment for the nominated occupation");
+      return 0;
+    default:
+      return 0;
+  }
 }
 
 export function isWhv462Country(nationality: string): boolean {

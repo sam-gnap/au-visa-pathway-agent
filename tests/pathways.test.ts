@@ -155,3 +155,70 @@ describe("pathway graph", () => {
     }
   });
 });
+
+describe("real-world pathway behaviour", () => {
+  it("includes the WHV -> sponsorship edges (417 -> 482, 462 -> 482)", () => {
+    for (const from of ["417", "462"] as const) {
+      const edge = pathwayEdges.find((e) => e.from === from && e.to === "482");
+      expect(edge, `missing edge ${from} -> 482`).toBeDefined();
+      expect(edge!.conditions.length).toBeGreaterThan(0);
+      expect(edge!.sources.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("never proposes an entry visa the user is blocked from (US national routes via 462, not 417)", () => {
+    const paths = findPathways(
+      baseSituation({
+        nationality: "United States",
+        age: 29,
+        currentLocation: "outside_australia",
+        currentVisaSubclass: undefined,
+        studyIntent: false,
+        goal: "temporary",
+      }),
+      "temporary",
+    );
+    expect(paths.length).toBeGreaterThan(0);
+    for (const p of paths) {
+      expect(p.nodes[0], `US national offered ${p.summary}`).not.toBe("417");
+    }
+    expect(paths.some((p) => p.nodes[0] === "462")).toBe(true);
+  });
+
+  it("filters age-blocked WHV entries (36-year-old gets no 417/462 entry)", () => {
+    const paths = findPathways(
+      baseSituation({
+        nationality: "Italy",
+        age: 36,
+        currentLocation: "outside_australia",
+        currentVisaSubclass: undefined,
+        studyIntent: false,
+        goal: "temporary",
+      }),
+      "temporary",
+    );
+    for (const p of paths) {
+      expect(["417", "462"], `36yo offered ${p.summary}`).not.toContain(p.nodes[0]);
+    }
+  });
+
+  it("breaks equal-length ties by entry fit (state-nominated sees 190 -> PR first)", () => {
+    const paths = findPathways(
+      baseSituation({
+        nationality: "Canada",
+        age: 32,
+        currentLocation: "outside_australia",
+        currentVisaSubclass: undefined,
+        occupationCodeOrName: "Civil Engineer",
+        hasStateNomination: true,
+        willingToLiveRegional: true,
+        yearsRelevantExperience: 9,
+        studyIntent: false,
+        goal: "pr",
+      }),
+      "pr",
+    );
+    expect(paths.length).toBeGreaterThan(0);
+    expect(paths[0].nodes).toEqual(["190", "PR"]);
+  });
+});

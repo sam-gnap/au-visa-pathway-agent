@@ -6,7 +6,10 @@ import type {
   FundsBand,
   Goal,
   Location,
+  PartnerStatus,
   Qualification,
+  SalaryBand,
+  SkillsAssessmentStatus,
   UserSituation,
 } from "@/types";
 import {
@@ -38,6 +41,9 @@ interface FormState {
   studyIntent: "" | "yes" | "no";
   fundsBand: FundsBand | "";
   goal: Goal | "";
+  skillsAssessment: SkillsAssessmentStatus | "";
+  partnerStatus: PartnerStatus | "";
+  salaryBand: SalaryBand | "";
 }
 
 const INITIAL_STATE: FormState = {
@@ -56,6 +62,9 @@ const INITIAL_STATE: FormState = {
   studyIntent: "",
   fundsBand: "",
   goal: "",
+  skillsAssessment: "",
+  partnerStatus: "",
+  salaryBand: "",
 };
 
 const VISA_SUBCLASS_OPTIONS: { value: string; label: string }[] = [
@@ -110,6 +119,9 @@ function toPayload(s: FormState): unknown {
     studyIntent: boolFrom(s.studyIntent),
     fundsBand: s.fundsBand || undefined,
     goal: s.goal || undefined,
+    skillsAssessment: s.skillsAssessment || undefined,
+    partnerStatus: s.partnerStatus || undefined,
+    salaryBand: s.salaryBand || undefined,
   };
 }
 
@@ -333,6 +345,47 @@ export function WizardForm({ onSubmit }: WizardFormProps) {
           ) : null}
         </div>
 
+        {/* Skills assessment */}
+        <fieldset className={fieldClass("skillsAssessment")}>
+          <legend className="field__label">
+            Skills assessment for this occupation?
+            <span className="field__hint"> — optional</span>
+          </legend>
+          <p className="field__help">
+            A suitable skills assessment from the relevant assessing authority
+            is mandatory for the skilled visas (189, 190, 491, 186).
+          </p>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                name="skillsAssessment"
+                checked={form.skillsAssessment === "yes"}
+                onChange={() => update("skillsAssessment", "yes")}
+              />
+              Yes, I have one
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="skillsAssessment"
+                checked={form.skillsAssessment === "in_progress"}
+                onChange={() => update("skillsAssessment", "in_progress")}
+              />
+              In progress
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="skillsAssessment"
+                checked={form.skillsAssessment === "no"}
+                onChange={() => update("skillsAssessment", "no")}
+              />
+              Not yet
+            </label>
+          </div>
+        </fieldset>
+
         {/* English */}
         <div className={fieldClass("englishLevel")}>
           <label className="field__label" htmlFor="f-english">
@@ -539,6 +592,56 @@ export function WizardForm({ onSubmit }: WizardFormProps) {
           ) : null}
         </fieldset>
 
+        {/* Salary band */}
+        <fieldset className={fieldClass("salaryBand")}>
+          <legend className="field__label">
+            Expected salary in an Australian role?
+            <span className="field__hint"> — optional</span>
+          </legend>
+          <p className="field__help">
+            Employer-sponsored roles (482) must pay at least AUD 76,515
+            (2025-26 Core Skills Income Threshold).
+          </p>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                name="salaryBand"
+                checked={form.salaryBand === "under_76k"}
+                onChange={() => update("salaryBand", "under_76k")}
+              />
+              Under $76k
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="salaryBand"
+                checked={form.salaryBand === "76k_to_141k"}
+                onChange={() => update("salaryBand", "76k_to_141k")}
+              />
+              $76k&ndash;$141k
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="salaryBand"
+                checked={form.salaryBand === "over_141k"}
+                onChange={() => update("salaryBand", "over_141k")}
+              />
+              Over $141k
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="salaryBand"
+                checked={form.salaryBand === "unknown"}
+                onChange={() => update("salaryBand", "unknown")}
+              />
+              Not sure yet
+            </label>
+          </div>
+        </fieldset>
+
         {/* State nomination */}
         <fieldset className={fieldClass("hasStateNomination")}>
           <legend className="field__label">State/territory nomination?</legend>
@@ -668,6 +771,48 @@ export function WizardForm({ onSubmit }: WizardFormProps) {
               {errors.studyIntent}
             </div>
           ) : null}
+        </fieldset>
+
+        {/* Partner status */}
+        <fieldset className={fieldClass("partnerStatus")}>
+          <legend className="field__label">
+            Partner situation?
+            <span className="field__hint"> — optional</span>
+          </legend>
+          <p className="field__help">
+            Affects the skilled points estimate: single applicants and those
+            whose partner also meets age/English/skills criteria score 10
+            points; a partner who doesn&apos;t scores 0.
+          </p>
+          <div className="radio-group">
+            <label>
+              <input
+                type="radio"
+                name="partnerStatus"
+                checked={form.partnerStatus === "single"}
+                onChange={() => update("partnerStatus", "single")}
+              />
+              Single
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="partnerStatus"
+                checked={form.partnerStatus === "partner_skilled"}
+                onChange={() => update("partnerStatus", "partner_skilled")}
+              />
+              Partner, meets skilled criteria
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="partnerStatus"
+                checked={form.partnerStatus === "partner_not_skilled"}
+                onChange={() => update("partnerStatus", "partner_not_skilled")}
+              />
+              Partner, doesn&apos;t meet them
+            </label>
+          </div>
         </fieldset>
 
         {/* Funds band */}

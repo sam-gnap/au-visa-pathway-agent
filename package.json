@@ -8,7 +8,8 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "eval": "tsx scripts/eval.ts"
+    "eval": "tsx scripts/eval.ts",
+    "personas": "tsx --tsconfig tsconfig.json scripts/personas.ts"
   },
   "dependencies": {
     "next": "^14.2",

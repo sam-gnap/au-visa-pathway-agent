@@ -101,6 +101,29 @@ export const evaluator: SubclassEvaluator = (s: UserSituation): SubclassEvaluati
     missing.push("Age under 45 helps with later PR transition (e.g. 186)");
   }
 
+  // Core Skills stream salary gate: the sponsored role must pay at least the
+  // Core Skills Income Threshold (AUD 76,515 in 2025-26). A role below it
+  // cannot be nominated, so a known sub-CSIT salary is a hard blocker.
+  switch (s.salaryBand) {
+    case "under_76k":
+      blockers.push(
+        "Expected salary below the Core Skills Income Threshold (AUD 76,515 in 2025-26) — the role cannot be nominated for the 482 Core Skills stream",
+      );
+      break;
+    case "76k_to_141k":
+    case "over_141k":
+      matched.push("Expected salary meets the Core Skills Income Threshold");
+      baseScore += 5;
+      break;
+    case "unknown":
+      missing.push(
+        "Confirm the role pays at least the Core Skills Income Threshold (AUD 76,515 in 2025-26)",
+      );
+      break;
+    default:
+      break;
+  }
+
   let statusHint: SubclassEvaluation["statusHint"] = "potentially_eligible";
   if (blockers.length > 0) statusHint = "not_eligible";
   else if (s.hasEligibleEmployerSponsor && matched.length >= 3 && missing.length === 0)
