@@ -1,0 +1,23 @@
+Skilled migration points test (subclasses 189, 190, 491)
+
+Australia's skilled visa stream uses a points test to rank candidates. Applicants must score at least 65 points to be invited, although in practice invitation thresholds for some occupations are considerably higher and shift with demand. Points are awarded across several categories.
+
+Age contributes the largest share for younger candidates: applicants aged 25 to 32 receive the maximum 30 points, while points decline at older brackets and reach zero at age 45.
+
+English language proficiency awards points at the Proficient (e.g. IELTS 7 each band) and Superior (e.g. IELTS 8 each band) levels; Competent English is required to apply but earns no points.
+
+Skilled employment is split into onshore Australian experience and overseas experience, with both capped. Up to 20 points are available for 8+ years of skilled employment in your nominated occupation, split between the two streams.
+
+Qualifications award points for recognised bachelor's, master's, or doctoral degrees, with a doctorate worth the most.
+
+Bonus points are available for:
+- Specialist STEM qualifications.
+- Accredited community language credentials (NAATI).
+- A professional year program in Australia.
+- Study in regional Australia.
+- A skilled partner, or a partner with Competent English, or being single.
+- State or territory nomination (subclass 190 adds 5 points; subclass 491 adds 15).
+
+Points are self-claimed but must be verified by evidence at invitation and visa application. Overclaiming results in refusal.
+
+Last verified: 2026-06-23. Not migration advice - see source for current rules.

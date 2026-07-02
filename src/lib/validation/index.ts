@@ -1,0 +1,307 @@
+import type {
+  EnglishLevel,
+  FundsBand,
+  Goal,
+  Location,
+  Qualification,
+  UserSituation,
+} from "@/types";
+
+/**
+ * Per-field validation error surfaced to the wizard UI.
+ */
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export type ValidationResult =
+  | { ok: true; value: UserSituation }
+  | { ok: false; errors: ValidationError[] };
+
+const LOCATIONS: readonly Location[] = [
+  "inside_australia",
+  "outside_australia",
+] as const;
+
+const ENGLISH_LEVELS: readonly EnglishLevel[] = [
+  "none",
+  "functional",
+  "vocational",
+  "competent",
+  "proficient",
+  "superior",
+] as const;
+
+const QUALIFICATIONS: readonly Qualification[] = [
+  "none",
+  "secondary",
+  "certificate",
+  "diploma",
+  "bachelor",
+  "masters",
+  "doctorate",
+] as const;
+
+const FUNDS_BANDS: readonly FundsBand[] = [
+  "under_5k",
+  "5k_20k",
+  "20k_50k",
+  "over_50k",
+] as const;
+
+const GOALS: readonly Goal[] = ["temporary", "study", "work", "pr"] as const;
+
+/**
+ * Hand-encoded list of ANZSCO-like occupations the MVP can reason about.
+ * Anything outside this list is not silently rejected: the eligibility engine
+ * should produce `insufficient_evidence` (see MVP_REQUIREMENTS §Wizard validation).
+ */
+export const supportedOccupations: ReadonlyArray<{ code: string; name: string }> = [
+  { code: "261313", name: "Software Engineer" },
+  { code: "254499", name: "Registered Nurse" },
+  { code: "221111", name: "Accountant" },
+  { code: "341111", name: "Electrician" },
+  { code: "331212", name: "Carpenter" },
+  { code: "233211", name: "Civil Engineer" },
+  { code: "241411", name: "Secondary School Teacher" },
+  { code: "351311", name: "Chef" },
+  { code: "233512", name: "Mechanical Engineer" },
+  { code: "261111", name: "ICT Business Analyst" },
+  { code: "261312", name: "Developer Programmer" },
+  { code: "241111", name: "Early Childhood Teacher" },
+  { code: "253111", name: "General Practitioner" },
+  { code: "133111", name: "Construction Project Manager" },
+  { code: "221213", name: "Auditor" },
+];
+
+/**
+ * Returns true if `occupation` matches a supported ANZSCO-like code or name
+ * (case-insensitive substring on names; exact match on codes).
+ *
+ * Caller should treat `false` as "unknown" and surface insufficient_evidence,
+ * NOT as a validation failure.
+ */
+export function isSupportedOccupation(occupation: string): boolean {
+  if (typeof occupation !== "string") return false;
+  const trimmed = occupation.trim();
+  if (!trimmed) return false;
+  const lower = trimmed.toLowerCase();
+  for (const entry of supportedOccupations) {
+    if (trimmed === entry.code) return true;
+    if (lower.includes(entry.name.toLowerCase())) return true;
+    if (entry.name.toLowerCase().includes(lower) && lower.length >= 4) return true;
+  }
+  return false;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function checkEnum<T extends string>(
+  value: unknown,
+  allowed: readonly T[],
+  field: string,
+  errors: ValidationError[],
+): T | undefined {
+  if (typeof value !== "string") {
+    errors.push({ field, message: `${field} is required` });
+    return undefined;
+  }
+  if (!(allowed as readonly string[]).includes(value)) {
+    errors.push({
+      field,
+      message: `${field} must be one of: ${allowed.join(", ")}`,
+    });
+    return undefined;
+  }
+  return value as T;
+}
+
+function checkBoolean(
+  value: unknown,
+  field: string,
+  errors: ValidationError[],
+): boolean | undefined {
+  if (typeof value !== "boolean") {
+    errors.push({ field, message: `${field} must be true or false` });
+    return undefined;
+  }
+  return value;
+}
+
+function checkNonEmptyString(
+  value: unknown,
+  field: string,
+  errors: ValidationError[],
+): string | undefined {
+  if (typeof value !== "string") {
+    errors.push({ field, message: `${field} is required` });
+    return undefined;
+  }
+  const trimmed = value.trim();
+  if (!trimmed) {
+    errors.push({ field, message: `${field} cannot be empty` });
+    return undefined;
+  }
+  return trimmed;
+}
+
+/**
+ * Validate a raw wizard payload against `UserSituation`. Returns either
+ * a discriminated `{ ok: true, value }` or `{ ok: false, errors }`.
+ *
+ * Rules:
+ * - All required fields present and correct type.
+ * - `age`: number in [16, 100].
+ * - `yearsRelevantExperience`: number >= 0.
+ * - Enum fields restricted to their union values.
+ * - `nationality`, `occupationCodeOrName`: non-empty strings.
+ * - `currentVisaSubclass` is optional; if present, must be string.
+ */
+export function validateSituation(input: unknown): ValidationResult {
+  const errors: ValidationError[] = [];
+
+  if (!isPlainObject(input)) {
+    return {
+      ok: false,
+      errors: [{ field: "_root", message: "Input must be an object" }],
+    };
+  }
+
+  const nationality = checkNonEmptyString(input.nationality, "nationality", errors);
+
+  // age: number in [16, 100]
+  let age: number | undefined;
+  if (typeof input.age !== "number" || Number.isNaN(input.age)) {
+    errors.push({ field: "age", message: "age must be a number" });
+  } else if (input.age < 16 || input.age > 100) {
+    errors.push({
+      field: "age",
+      message: "age must be between 16 and 100 inclusive",
+    });
+  } else {
+    age = input.age;
+  }
+
+  const currentLocation = checkEnum<Location>(
+    input.currentLocation,
+    LOCATIONS,
+    "currentLocation",
+    errors,
+  );
+
+  // currentVisaSubclass: optional string
+  let currentVisaSubclass: string | undefined;
+  if (input.currentVisaSubclass !== undefined && input.currentVisaSubclass !== null) {
+    if (typeof input.currentVisaSubclass !== "string") {
+      errors.push({
+        field: "currentVisaSubclass",
+        message: "currentVisaSubclass must be a string when provided",
+      });
+    } else {
+      currentVisaSubclass = input.currentVisaSubclass;
+    }
+  }
+
+  const occupationCodeOrName = checkNonEmptyString(
+    input.occupationCodeOrName,
+    "occupationCodeOrName",
+    errors,
+  );
+
+  const englishLevel = checkEnum<EnglishLevel>(
+    input.englishLevel,
+    ENGLISH_LEVELS,
+    "englishLevel",
+    errors,
+  );
+
+  const highestQualification = checkEnum<Qualification>(
+    input.highestQualification,
+    QUALIFICATIONS,
+    "highestQualification",
+    errors,
+  );
+
+  const australianStudyCompleted = checkBoolean(
+    input.australianStudyCompleted,
+    "australianStudyCompleted",
+    errors,
+  );
+
+  // yearsRelevantExperience: number >= 0
+  let yearsRelevantExperience: number | undefined;
+  if (
+    typeof input.yearsRelevantExperience !== "number" ||
+    Number.isNaN(input.yearsRelevantExperience)
+  ) {
+    errors.push({
+      field: "yearsRelevantExperience",
+      message: "yearsRelevantExperience must be a number",
+    });
+  } else if (input.yearsRelevantExperience < 0) {
+    errors.push({
+      field: "yearsRelevantExperience",
+      message: "yearsRelevantExperience must be 0 or greater",
+    });
+  } else {
+    yearsRelevantExperience = input.yearsRelevantExperience;
+  }
+
+  const hasEligibleEmployerSponsor = checkBoolean(
+    input.hasEligibleEmployerSponsor,
+    "hasEligibleEmployerSponsor",
+    errors,
+  );
+
+  const hasStateNomination = checkBoolean(
+    input.hasStateNomination,
+    "hasStateNomination",
+    errors,
+  );
+
+  const willingToLiveRegional = checkBoolean(
+    input.willingToLiveRegional,
+    "willingToLiveRegional",
+    errors,
+  );
+
+  const studyIntent = checkBoolean(input.studyIntent, "studyIntent", errors);
+
+  const fundsBand = checkEnum<FundsBand>(
+    input.fundsBand,
+    FUNDS_BANDS,
+    "fundsBand",
+    errors,
+  );
+
+  const goal = checkEnum<Goal>(input.goal, GOALS, "goal", errors);
+
+  if (errors.length > 0) {
+    return { ok: false, errors };
+  }
+
+  // All required fields are validated above; non-null assertions are safe.
+  const value: UserSituation = {
+    nationality: nationality!,
+    age: age!,
+    currentLocation: currentLocation!,
+    occupationCodeOrName: occupationCodeOrName!,
+    englishLevel: englishLevel!,
+    highestQualification: highestQualification!,
+    australianStudyCompleted: australianStudyCompleted!,
+    yearsRelevantExperience: yearsRelevantExperience!,
+    hasEligibleEmployerSponsor: hasEligibleEmployerSponsor!,
+    hasStateNomination: hasStateNomination!,
+    willingToLiveRegional: willingToLiveRegional!,
+    studyIntent: studyIntent!,
+    fundsBand: fundsBand!,
+    goal: goal!,
+  };
+  if (currentVisaSubclass !== undefined) {
+    value.currentVisaSubclass = currentVisaSubclass;
+  }
+  return { ok: true, value };
+}

@@ -1,0 +1,21 @@
+Employer-sponsored work visas (subclasses 482 and 186)
+
+Australia's main employer-sponsored work visas are the temporary Skills in Demand visa (subclass 482, formerly Temporary Skill Shortage) and the permanent Employer Nomination Scheme (subclass 186).
+
+Subclass 482 - Skills in Demand. Temporary, up to 4 years. Three streams from late 2024:
+
+- Specialist Skills: high-earning roles above a defined income threshold. Faster processing.
+- Core Skills: occupations on the Core Skills Occupation List (CSOL). Replaces the former Short-Term and Medium-Term streams.
+- Labour Agreement: roles covered by a tailored labour agreement between the employer and government.
+
+Common 482 requirements: nomination by an approved sponsor, occupation on the relevant list, at least 1 year of relevant work experience in the last 5 years, salary at or above the Temporary Skilled Migration Income Threshold (currently AUD 73,150), and Vocational or Competent English depending on the stream.
+
+Subclass 186 - Employer Nomination Scheme. Permanent. Three streams:
+
+- Direct Entry: applicant has not previously held a relevant employer-sponsored visa. Requires a positive skills assessment and at least 3 years of relevant experience.
+- Temporary Residence Transition: 482 (or legacy 457) holder who has worked for the sponsoring employer in the nominated occupation for at least 2 years out of the previous 3.
+- Labour Agreement: same labour agreement framework as the 482.
+
+ANZSCO requirements: both visas tie eligibility to the ANZSCO occupation code on the nomination. Duties and qualifications must match the ANZSCO description for that occupation. The sponsoring employer must demonstrate a genuine need.
+
+Last verified: 2026-06-23. Not migration advice - see source for current rules.

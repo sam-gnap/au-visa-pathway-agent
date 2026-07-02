@@ -1,0 +1,140 @@
+{
+  "lastChecked": "2026-06-24",
+  "sources": {
+    "processingTimes": "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-processing-times/global-visa-processing-times",
+    "planningLevels": "https://immi.homeaffairs.gov.au/what-we-do/migration-program-planning-levels",
+    "skillSelect": "https://immi.homeaffairs.gov.au/visas/working-in-australia/skillselect/invitation-rounds"
+  },
+  "notes": [
+    "Processing times are sourced from Home Affairs published medians and 90th percentiles as reported in mid-2025 to mid-2026. Home Affairs updates these monthly; figures here reflect what migration-advisory sites have most recently quoted from the official tool.",
+    "Planning levels are the permanent Migration Program annual caps. Temporary visas (482, 417, 462, 485, 500) do not have annual caps in the permanent Migration Program; the annualCap field is omitted for them.",
+    "189 SkillSelect cutoff varies by occupation; the score recorded here is the LOWEST cutoff (trades) for the most recent round, with a note about the higher general baseline.",
+    "Home Affairs blocks automated fetches (HTTP 403), so processing-time figures were corroborated across multiple migration-advisor summaries that quote the official tool, rather than fetched directly."
+  ],
+  "subclasses": {
+    "189": {
+      "name": "Skilled Independent",
+      "category": "permanent",
+      "processingTime": {
+        "p50": "6 months",
+        "p90": "9 months"
+      },
+      "annualCap": 16900,
+      "annualCapProgramYear": "2024-25",
+      "recentCutoff": {
+        "score": 65,
+        "asOf": "2025-11",
+        "round": "13 November 2025",
+        "invitationsIssued": 10000,
+        "notes": "65 was the lowest cutoff (building trades). General/ICT occupations were invited at 85-110 points in the same round."
+      },
+      "notes": [
+        "Latest official round 13 November 2025 issued ~10,000 invitations.",
+        "An unofficial third round on 4 June 2026 (Round 3 figures crowdsourced pending official publication) also showed 65-100 point range."
+      ]
+    },
+    "190": {
+      "name": "Skilled Nominated",
+      "category": "permanent",
+      "processingTime": {
+        "p50": "15 months",
+        "p90": "22 months"
+      },
+      "annualCap": 33000,
+      "annualCapProgramYear": "2024-25",
+      "notes": [
+        "Planning level of 33,000 may be reported as combined with 491 in some sources.",
+        "State nomination required; cutoff scores set per state, not by SkillSelect."
+      ]
+    },
+    "491": {
+      "name": "Skilled Work Regional (Provisional)",
+      "category": "provisional",
+      "processingTime": {
+        "p50": "22 months",
+        "p90": "25 months"
+      },
+      "annualCap": 33000,
+      "annualCapProgramYear": "2024-25",
+      "notes": [
+        "Same processing time bracket reported for both Family-Sponsored and State/Territory-nominated streams.",
+        "Planning level may be reported combined with 190 in some sources."
+      ]
+    },
+    "482": {
+      "name": "Skills in Demand (formerly TSS)",
+      "category": "temporary",
+      "processingTime": {
+        "p50": "44 days",
+        "p90": "3 months"
+      },
+      "notes": [
+        "Temporary visa, no annual cap in the permanent Migration Program.",
+        "Replaced the Temporary Skill Shortage visa name in December 2024.",
+        "Streams: Core Skills (uses CSOL), Specialist Skills, Labour Agreement."
+      ]
+    },
+    "186": {
+      "name": "Employer Nomination Scheme",
+      "category": "permanent",
+      "processingTime": {
+        "p50": "12 months",
+        "p90": "19 months"
+      },
+      "annualCap": 44000,
+      "annualCapProgramYear": "2024-25",
+      "notes": [
+        "Annual cap 44,000 is the total Employer Sponsored category, which includes 186 and 187 streams.",
+        "Processing time shown is for the Direct Entry stream; TRT stream is similar (~13 months p50).",
+        "Labour Agreement stream is much faster (~5 months p50)."
+      ]
+    },
+    "417": {
+      "name": "Working Holiday",
+      "category": "temporary",
+      "processingTime": {
+        "p50": "1 day",
+        "p90": "2 days"
+      },
+      "notes": [
+        "Temporary visa, no annual cap in the permanent Migration Program.",
+        "Most applications decided within 24-48 hours of lodgement."
+      ]
+    },
+    "462": {
+      "name": "Work and Holiday",
+      "category": "temporary",
+      "processingTime": {
+        "p50": "1 day",
+        "p90": "2 days"
+      },
+      "notes": [
+        "Temporary visa, no annual cap in the permanent Migration Program.",
+        "Country-specific annual quotas apply but are managed separately from the permanent Migration Program."
+      ]
+    },
+    "485": {
+      "name": "Temporary Graduate",
+      "category": "temporary",
+      "processingTime": {
+        "p50": "35 days"
+      },
+      "notes": [
+        "Temporary visa, no annual cap in the permanent Migration Program.",
+        "Only median (50%) commonly published; 90th percentile not consistently reported in sources reviewed."
+      ]
+    },
+    "500": {
+      "name": "Student",
+      "category": "temporary",
+      "processingTime": {
+        "p50": "29 days",
+        "p90": "6 months"
+      },
+      "notes": [
+        "Temporary visa, no annual cap in the permanent Migration Program.",
+        "p90 quoted by sources reflects ~95th percentile in some Home Affairs tool snapshots; varies sharply by education sector and country."
+      ]
+    }
+  }
+}

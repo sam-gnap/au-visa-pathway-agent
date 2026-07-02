@@ -1,0 +1,705 @@
+{
+  "$schema": "./fixtures.schema (informal)",
+  "description": "MVP eval fixtures. Each fixture has a UserSituation and expectations the rule engine should satisfy. Expectations are intentionally conservative — status arrays where reasonable — so the suite catches regressions without pinning down every numeric score.",
+  "fixtures": [
+    {
+      "id": "skilled-189-strong-fit",
+      "description": "Software engineer, 30, bachelor's, proficient English, 5 years experience, PR goal. Should be a strong 189 candidate.",
+      "situation": {
+        "nationality": "India",
+        "age": 30,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 5,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "190": { "status": ["potentially_eligible"], "mustNotBeBlocked": true },
+          "417": { "mustBeBlocked": true },
+          "462": { "mustBeBlocked": true }
+        },
+        "topRanked": ["189"],
+        "notTopRanked": ["417", "462", "485", "500"],
+        "expectsAnyPathway": true
+      }
+    },
+    {
+      "id": "skilled-189-age-just-over-cap",
+      "description": "46-year-old software engineer with PR goal. 189, 190, 491, 186 should all be blocked by age cap.",
+      "situation": {
+        "nationality": "India",
+        "age": 46,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 10,
+        "hasEligibleEmployerSponsor": true,
+        "hasStateNomination": true,
+        "willingToLiveRegional": true,
+        "studyIntent": false,
+        "fundsBand": "over_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "status": "not_eligible", "mustBeBlocked": true },
+          "190": { "status": "not_eligible", "mustBeBlocked": true },
+          "491": { "status": "not_eligible", "mustBeBlocked": true },
+          "186": { "status": "not_eligible", "mustBeBlocked": true }
+        },
+        "notTopRanked": ["189", "190", "491", "186"]
+      }
+    },
+    {
+      "id": "skilled-unknown-occupation",
+      "description": "Generic candidate with an occupation the engine doesn't recognise. Points-based subclasses should surface insufficient evidence or potentially_eligible with missing-occupation, never not_eligible based on occupation alone.",
+      "situation": {
+        "nationality": "India",
+        "age": 30,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "unknown",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 4,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": true,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "status": ["potentially_eligible", "insufficient_evidence"], "mustNotBeBlocked": true },
+          "190": { "status": ["potentially_eligible", "insufficient_evidence"], "mustNotBeBlocked": true },
+          "491": { "status": ["potentially_eligible", "insufficient_evidence"], "mustNotBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "skilled-non-listed-occupation-blocked",
+      "description": "An occupation the engine knows is NOT on the supported list (recognised string but not in points list) should produce a blocker for 189.",
+      "situation": {
+        "nationality": "India",
+        "age": 30,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Florist",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 5,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "status": "not_eligible", "mustBeBlocked": true },
+          "190": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "pr-goal-no-sponsor-no-nomination",
+      "description": "Skilled candidate with PR goal but no sponsor and no state nomination. 189 should rank highest among feasible permanent options.",
+      "situation": {
+        "nationality": "India",
+        "age": 28,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Registered Nurse",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 4,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "mustNotBeBlocked": true },
+          "186": { "mustBeBlocked": true },
+          "482": { "mustBeBlocked": true },
+          "190": { "mustNotBeBlocked": true }
+        },
+        "topRanked": ["189"],
+        "notTopRanked": ["482", "186", "417", "462", "500", "485"]
+      }
+    },
+    {
+      "id": "skilled-190-with-nomination",
+      "description": "Skilled candidate with state/territory nomination — 190 should rank well and be unblocked.",
+      "situation": {
+        "nationality": "Philippines",
+        "age": 32,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Registered Nurse",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 6,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": true,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "190": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "189": { "mustNotBeBlocked": true }
+        },
+        "topRanked": ["190", "189"],
+        "notTopRanked": ["417", "462", "500", "485"]
+      }
+    },
+    {
+      "id": "regional-491-willing",
+      "description": "Candidate without state nomination but willing to live regional. 491 should be unblocked and feasible.",
+      "situation": {
+        "nationality": "India",
+        "age": 29,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Civil Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 4,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": true,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "491": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "189": { "mustNotBeBlocked": true }
+        },
+        "notTopRanked": ["417", "462", "485"]
+      }
+    },
+    {
+      "id": "regional-491-unwilling-blocked",
+      "description": "Candidate not willing to live regional and no state nomination — 491 should be blocked.",
+      "situation": {
+        "nationality": "India",
+        "age": 29,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Civil Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 4,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "491": { "status": "not_eligible", "mustBeBlocked": true },
+          "189": { "mustNotBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "employer-sponsor-482-186",
+      "description": "Candidate with eligible employer sponsor. 482 and 186 should be unblocked and rank well; PR goal should boost 186 over 482.",
+      "situation": {
+        "nationality": "India",
+        "age": 34,
+        "currentLocation": "inside_australia",
+        "currentVisaSubclass": "482",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 6,
+        "hasEligibleEmployerSponsor": true,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "482": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "186": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "189": { "mustNotBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "no-employer-sponsor-482-186-blocked",
+      "description": "Same candidate without employer sponsor — 482 and 186 must be blocked.",
+      "situation": {
+        "nationality": "India",
+        "age": 34,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 6,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "work"
+      },
+      "expectations": {
+        "verdicts": {
+          "482": { "status": "not_eligible", "mustBeBlocked": true },
+          "186": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "whv-417-uk-match",
+      "description": "UK national aged 25 with temporary goal — 417 should be a strong fit.",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 25,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Barista",
+        "englishLevel": "proficient",
+        "highestQualification": "secondary",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 1,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "verdicts": {
+          "417": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "462": { "mustBeBlocked": true }
+        },
+        "topRanked": ["417"],
+        "notTopRanked": ["189", "190", "186"]
+      }
+    },
+    {
+      "id": "whv-417-mismatch-india",
+      "description": "Indian national — 417 is NOT available (India is not on the 417 partner list). Should be blocked. 462 also should be blocked (India also not on 462 list).",
+      "situation": {
+        "nationality": "India",
+        "age": 25,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Barista",
+        "englishLevel": "competent",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 1,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "verdicts": {
+          "417": { "status": "not_eligible", "mustBeBlocked": true },
+          "462": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "whv-462-usa-match",
+      "description": "US national aged 26 — 462 should be feasible. 417 blocked because USA isn't on 417 list.",
+      "situation": {
+        "nationality": "United States",
+        "age": 26,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Barista",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 2,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "verdicts": {
+          "462": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "417": { "status": "not_eligible", "mustBeBlocked": true }
+        },
+        "topRanked": ["462"]
+      }
+    },
+    {
+      "id": "whv-age-cap-edge-31",
+      "description": "31-year-old UK national — over the standard 18-30 cap but within the extended 35 range. 417 should remain unblocked (still in the extended-age branch).",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 31,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 5,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "verdicts": {
+          "417": { "status": ["potentially_eligible", "likely_eligible"], "mustNotBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "whv-age-cap-over-36",
+      "description": "36-year-old UK national. Outside the extended cap — 417 must be blocked by age.",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 36,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 10,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "verdicts": {
+          "417": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "student-500-young-funds",
+      "description": "Young international student with study intent and funds. 500 should be top ranked.",
+      "situation": {
+        "nationality": "Vietnam",
+        "age": 22,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "unknown",
+        "englishLevel": "competent",
+        "highestQualification": "secondary",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 0,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": true,
+        "fundsBand": "20k_50k",
+        "goal": "study"
+      },
+      "expectations": {
+        "verdicts": {
+          "500": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+        },
+        "topRanked": ["500"],
+        "notTopRanked": ["189", "186", "482"]
+      }
+    },
+    {
+      "id": "student-500-no-intent-blocked",
+      "description": "Candidate with NO study intent — 500 must be blocked even with strong funds.",
+      "situation": {
+        "nationality": "Vietnam",
+        "age": 22,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "unknown",
+        "englishLevel": "competent",
+        "highestQualification": "secondary",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 0,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "over_50k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "verdicts": {
+          "500": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "grad-485-with-au-study",
+      "description": "Recent Australian graduate, 26, competent English, masters degree. 485 should be a strong fit.",
+      "situation": {
+        "nationality": "China",
+        "age": 26,
+        "currentLocation": "inside_australia",
+        "currentVisaSubclass": "500",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "masters",
+        "australianStudyCompleted": true,
+        "yearsRelevantExperience": 1,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "work"
+      },
+      "expectations": {
+        "verdicts": {
+          "485": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+        },
+        "expectsAnyPathway": true
+      }
+    },
+    {
+      "id": "grad-485-no-au-study-blocked",
+      "description": "Same demographic, no Australian study completed — 485 must be blocked.",
+      "situation": {
+        "nationality": "China",
+        "age": 26,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "masters",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 1,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "work"
+      },
+      "expectations": {
+        "verdicts": {
+          "485": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "grad-485-age-cap-edge",
+      "description": "35-year-old with completed AU study — 485 must be blocked by the 35 age cap.",
+      "situation": {
+        "nationality": "China",
+        "age": 35,
+        "currentLocation": "inside_australia",
+        "currentVisaSubclass": "500",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "competent",
+        "highestQualification": "masters",
+        "australianStudyCompleted": true,
+        "yearsRelevantExperience": 3,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "work"
+      },
+      "expectations": {
+        "verdicts": {
+          "485": { "status": "not_eligible", "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "goal-alignment-pr-vs-temporary",
+      "description": "Same person, PR goal — 189 should rank top. (Pair fixture compared with goal-alignment-temporary.)",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 28,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 5,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "topRanked": ["189"],
+        "notTopRanked": ["417", "462", "500", "485"]
+      }
+    },
+    {
+      "id": "goal-alignment-temporary",
+      "description": "Same UK person but temporary goal — 417 should rank top (large goal boost).",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 28,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 5,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "5k_20k",
+        "goal": "temporary"
+      },
+      "expectations": {
+        "topRanked": ["417"],
+        "notTopRanked": ["189", "186", "500"]
+      }
+    },
+    {
+      "id": "very-strong-all-around",
+      "description": "Strong candidate with sponsor, nomination, AU study, regional willingness. Many subclasses should land likely/potentially eligible.",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 28,
+        "currentLocation": "inside_australia",
+        "currentVisaSubclass": "485",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "superior",
+        "highestQualification": "masters",
+        "australianStudyCompleted": true,
+        "yearsRelevantExperience": 6,
+        "hasEligibleEmployerSponsor": true,
+        "hasStateNomination": true,
+        "willingToLiveRegional": true,
+        "studyIntent": false,
+        "fundsBand": "over_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "190": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "491": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "186": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true },
+          "482": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+        },
+        "topRanked": ["189", "190", "186", "491"],
+        "expectsAnyPathway": true
+      }
+    },
+    {
+      "id": "insufficient-evidence-edges",
+      "description": "Older candidate with unknown occupation, low qual, low English, low experience. Skilled subclasses should land in insufficient_evidence territory or be blocked, never likely_eligible.",
+      "situation": {
+        "nationality": "Indonesia",
+        "age": 24,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "unknown",
+        "englishLevel": "functional",
+        "highestQualification": "secondary",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 0,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "under_5k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "189": { "status": ["insufficient_evidence", "potentially_eligible"] },
+          "190": { "status": ["insufficient_evidence", "potentially_eligible", "not_eligible"] },
+          "186": { "mustBeBlocked": true },
+          "482": { "mustBeBlocked": true }
+        }
+      }
+    },
+    {
+      "id": "student-500-low-funds-needs-confirmation",
+      "description": "Student intent + competent English but funds in the 5k-20k band. 500 still unblocked but should report missing funds.",
+      "situation": {
+        "nationality": "Vietnam",
+        "age": 24,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "unknown",
+        "englishLevel": "competent",
+        "highestQualification": "secondary",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 0,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": false,
+        "willingToLiveRegional": false,
+        "studyIntent": true,
+        "fundsBand": "5k_20k",
+        "goal": "study"
+      },
+      "expectations": {
+        "verdicts": {
+          "500": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+        },
+        "topRanked": ["500"]
+      }
+    },
+    {
+      "id": "state-nom-but-not-regional-491-blocked",
+      "description": "Has state nomination but unwilling to live regional. 491 evaluator should still block because 491 requires regional commitment.",
+      "situation": {
+        "nationality": "United Kingdom",
+        "age": 30,
+        "currentLocation": "outside_australia",
+        "occupationCodeOrName": "Software Engineer",
+        "englishLevel": "proficient",
+        "highestQualification": "bachelor",
+        "australianStudyCompleted": false,
+        "yearsRelevantExperience": 5,
+        "hasEligibleEmployerSponsor": false,
+        "hasStateNomination": true,
+        "willingToLiveRegional": false,
+        "studyIntent": false,
+        "fundsBand": "20k_50k",
+        "goal": "pr"
+      },
+      "expectations": {
+        "verdicts": {
+          "491": { "status": "not_eligible", "mustBeBlocked": true },
+          "190": { "status": ["likely_eligible", "potentially_eligible"], "mustNotBeBlocked": true }
+        }
+      }
+    }
+  ]
+}
